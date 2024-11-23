@@ -86,6 +86,7 @@
                 <option value="español">Español</option>
                 <option value="inglés">Inglés</option>
                 <option value="ruso">Ruso</option>
+                <option value="japones">Japones</option>
             </select>
 
             <button type="submit">Guardar</button>
@@ -128,6 +129,16 @@
                 lastVisit: "Последний визит",
                 firstVisit: "Добро пожаловать на ваш первый визит.",
             },
+            japones: {
+                settings: "設定",
+                theme: "テーマ",
+                fontSize: "フォントサイズ",
+                language: "言語",
+                saveSettings: "保存する",
+                resetSettings: "リセット",
+                lastVisit: "最終訪問",
+                firstVisit: "初めての訪問へようこそ。",
+            },
         };
 
         function loadSettings() {
@@ -165,7 +176,8 @@
 
             if (elements.lastVisitMessage.textContent.includes("Última visita") || 
                 elements.lastVisitMessage.textContent.includes("Last visit") || 
-                elements.lastVisitMessage.textContent.includes("Последний визит")) {
+                elements.lastVisitMessage.textContent.includes("Последний визит") ||
+                elements.lastVisitMessage.textContent.includes("最終訪問")) {
                 elements.lastVisitMessage.textContent = `${texts.lastVisit}: ${sessionStorage.getItem('lastVisit') || ''}`;
             } else {
                 elements.lastVisitMessage.textContent = texts.firstVisit;
