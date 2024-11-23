@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <title>API Web storage</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.claro {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        body.oscuro {
+            background-color: #333333;
+            color: #ffffff;
+        }
+
+        .fuente-pequeña {
+            font-size: 12px;
+        }
+
+        .fuente-mediana {
+            font-size: 16px;
+        }
+
+        .fuente-grande {
+            font-size: 20px;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .form-container select, 
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .message {
+            margin: 20px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h3>Ajustes</h3>
+        <form id="settingsForm">
+            <label for="theme">Tema</label>
+            <select id="theme">
+                <option value="" disabled selected>Selecciona un tema</option>
+                <option value="claro">Claro</option>
+                <option value="oscuro">Oscuro</option>
+            </select>
+
+            <label for="fontSize">Tamaño de la fuente</label>
+            <select id="fontSize">
+                <option value="" disabled selected>Selecciona un tamaño</option>
+                <option value="pequeño">Pequeño</option>
+                <option value="mediano">Mediano</option>
+                <option value="grande">Grande</option>
+            </select>
+
+            <label for="language">Idioma</label>
+            <select id="language">
+                <option value="" disabled selected>Selecciona un idioma</option>
+                <option value="español">Español</option>
+                <option value="inglés">Inglés</option>
+                <option value="ruso">Ruso</option>
+            </select>
+
+            <button type="submit">Guardar</button>
+            <button type="button" id="resetSettings">Restablecer</button>
+        </form>
+    </div>
+    <div class="message">
+        <p id="lastVisitMessage"></p>
+    </div>
+
+    <script>
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('userSettings'));
+
+            if (settings) {
+                document.body.className = settings.theme || '';
+                document.body.classList.add(settings.fontSize ? `fuente-${settings.fontSize}` : '');
+                document.getElementById('theme').value = settings.theme;
+                document.getElementById('fontSize').value = settings.fontSize;
+                document.getElementById('language').value = settings.language;
+            }
+        }
+
+        function saveSettings(event) {
+            event.preventDefault();
+            const theme = document.getElementById('theme').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const language = document.getElementById('language').value;
+
+            if (!theme || !fontSize || !language) {
+                alert('Por favor, selecciona todas las opciones.');
+                return;
+            }
+
+            const settings = {theme, fontSize, language};
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+            loadSettings();
+            alert('Ajustes guardadas con éxito.');
+        }
+
+        function resetSettings() {
+            localStorage.removeItem('userSettings');
+            location.reload();
+        }
+
+        function handleLastVisit() {
+            const now = new Date();
+            const lastVisit = sessionStorage.getItem('lastVisit');
+            if (lastVisit) {
+                document.getElementById('lastVisitMessage').textContent = `Última visita: ${lastVisit}`;
+            } else {
+                document.getElementById('lastVisitMessage').textContent = 'Bienvenido a tu primera visita.';
+            }
+            sessionStorage.setItem('lastVisit', now.toLocaleString());
+        }
+
+        document.getElementById('settingsForm').addEventListener('submit', saveSettings);
+        document.getElementById('resetSettings').addEventListener('click', resetSettings);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            handleLastVisit();
+        });
+    </script>
+</body>
+</html>
