@@ -97,6 +97,39 @@
     </div>
 
     <script>
+        const translations = {
+            español: {
+                settings: "Ajustes",
+                theme: "Tema",
+                fontSize: "Tamaño de la fuente",
+                language: "Idioma",
+                saveSettings: "Guardar",
+                resetSettings: "Restablecer",
+                lastVisit: "Última visita",
+                firstVisit: "Bienvenido a tu primera visita.",
+            },
+            inglés: {
+                settings: "Settings",
+                theme: "Theme",
+                fontSize: "Font size",
+                language: "Language",
+                saveSettings: "Save",
+                resetSettings: "Reset",
+                lastVisit: "Last visit",
+                firstVisit: "Welcome to your first visit.",
+            },
+            ruso: {
+                settings: "Настройки",
+                theme: "Тема",
+                fontSize: "Размер шрифта",
+                language: "Язык",
+                saveSettings: "Сохранить",
+                resetSettings: "Сбросить",
+                lastVisit: "Последний визит",
+                firstVisit: "Добро пожаловать на ваш первый визит.",
+            },
+        };
+
         function loadSettings() {
             const settings = JSON.parse(localStorage.getItem('userSettings'));
 
@@ -106,6 +139,36 @@
                 document.getElementById('theme').value = settings.theme;
                 document.getElementById('fontSize').value = settings.fontSize;
                 document.getElementById('language').value = settings.language;
+
+                applyLanguage(settings.language);
+            }
+        }
+
+        function applyLanguage(language) {
+            const elements = {
+                settings: document.querySelector('h3'),
+                theme: document.querySelector('label[for="theme"]'),
+                fontSize: document.querySelector('label[for="fontSize"]'),
+                language: document.querySelector('label[for="language"]'),
+                saveSettings: document.querySelector('button[type="submit"]'),
+                resetSettings: document.getElementById('resetSettings'),
+                lastVisitMessage: document.getElementById('lastVisitMessage'),
+            };
+
+            const texts = translations[language] || translations['español'];
+            elements.settings.textContent = texts.settings;
+            elements.theme.textContent = texts.theme;
+            elements.fontSize.textContent = texts.fontSize;
+            elements.language.textContent = texts.language;
+            elements.saveSettings.textContent = texts.saveSettings;
+            elements.resetSettings.textContent = texts.resetSettings;
+
+            if (elements.lastVisitMessage.textContent.includes("Última visita") || 
+                elements.lastVisitMessage.textContent.includes("Last visit") || 
+                elements.lastVisitMessage.textContent.includes("Последний визит")) {
+                elements.lastVisitMessage.textContent = `${texts.lastVisit}: ${sessionStorage.getItem('lastVisit') || ''}`;
+            } else {
+                elements.lastVisitMessage.textContent = texts.firstVisit;
             }
         }
 
@@ -147,6 +210,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             handleLastVisit();
+
+            if (!localStorage.getItem('userSettings')) {
+                applyLanguage('español');
+            }
         });
     </script>
 </body>
